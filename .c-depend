@@ -1,6 +1,6 @@
 ata.c.o: ata.c ata.h pci.h sched.h io.h defs.h printk.h panic.h irq.h \
  apic.h acpi.h common.h timer.h
-keyboard.c.o: keyboard.c irq.h vga.h common.h
+keyboard.c.o: keyboard.c irq.h vga.h common.h apic.h acpi.h
 vga.c.o: vga.c vga.h common.h paging.h defs.h
 pci.c.o: pci.c pci.h io.h defs.h printk.h panic.h
 acpi.c.o: acpi.c acpi.h common.h paging.h defs.h
@@ -19,5 +19,5 @@ timer.c.o: timer.c irq.h vga.h common.h apic.h acpi.h timer.h sched.h ata.h \
 ext2.c.o: ext2.c ext2.h defs.h panic.h printk.h ata.h pci.h sched.h \
  common.h
 syscall.c.o: syscall.c syscall.h irq.h panic.h printk.h common.h errno.h \
- timer.h sched.h bug.h ata.h pci.h
+ timer.h sched.h bug.h ata.h pci.h vga.h
 init.c.o: init.c init.h defs.h ext2.h

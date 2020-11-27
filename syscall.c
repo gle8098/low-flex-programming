@@ -6,6 +6,7 @@
 #include "sched.h"
 #include "bug.h"
 #include "ata.h"
+#include "vga.h"
 
 uint32_t syscall_wait(struct regs* regs) {
     int ticks = regs->ebx;

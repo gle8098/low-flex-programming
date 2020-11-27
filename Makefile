@@ -1,5 +1,5 @@
 AS=gcc -m32 -c -g -mgeneral-regs-only
-CC=gcc -m32 -g -mgeneral-regs-only -mno-red-zone -std=gnu99 -ffreestanding -fno-pie -Wall -Wextra -static-libgcc -O2
+CC=gcc -m32 -g -mgeneral-regs-only -mno-red-zone -std=gnu99 -ffreestanding -fno-pie -Wall -Wextra -static-libgcc -O0
 LD=gcc -m32 -fno-pic -Wl,-static -Wl,-Bsymbolic -nostartfiles
 OBJCOPY=objcopy
 SHELL := /bin/bash
@@ -41,6 +41,8 @@ clean:
 	rm -f .*-depend
 	rm -f kernel.bin
 	rm -f kernel.sym
+
+all: build
 
 include .c-depend
 include .S-depend
