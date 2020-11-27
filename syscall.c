@@ -4,7 +4,6 @@
 #include "errno.h"
 #include "timer.h"
 #include "sched.h"
-#include "bug.h"
 #include "ata.h"
 #include "vga.h"
 

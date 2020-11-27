@@ -18,7 +18,7 @@ image: build
 build: .c-depend .S-depend $(C_OBJS) $(ASM_OBJS) linker.ld
 	$(LD) -T <(cpp -P -E linker.ld) -o kernel.bin -ffreestanding -O2 -nostdlib -lgcc $(ASM_OBJS) $(C_OBJS)
 	$(OBJCOPY) --only-keep-debug kernel.bin kernel.sym
-	$(OBJCOPY) --strip-debug kernel.bin
+	# $(OBJCOPY) --strip-debug kernel.bin
 
 %.c.o: %.c
 	$(CC) $(CCFLAGS) -c $< -o $@
@@ -41,8 +41,9 @@ clean:
 	rm -f .*-depend
 	rm -f kernel.bin
 	rm -f kernel.sym
+	rm -f kernel.iso
 
-all: build
+all: image
 
 include .c-depend
 include .S-depend

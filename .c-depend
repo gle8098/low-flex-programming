@@ -6,9 +6,10 @@ pci.c.o: pci.c pci.h io.h defs.h printk.h panic.h
 acpi.c.o: acpi.c acpi.h common.h paging.h defs.h
 panic.c.o: panic.c panic.h printk.h irq.h
 sched.c.o: sched.c sched.h errno.h irq.h common.h paging.h defs.h panic.h \
- printk.h gdt.h bug.h init.h
-kernel.c.o: kernel.c idt.h gdt.h acpi.h apic.h irq.h vga.h common.h panic.h \
- printk.h paging.h defs.h sched.h pci.h ata.h
+ printk.h gdt.h init.h
+kernel.c.o: kernel.c multiboot.h idt.h gdt.h acpi.h apic.h irq.h vga.h \
+ common.h panic.h printk.h paging.h defs.h sched.h pci.h ata.h \
+ memory_map.h
 idt.c.o: idt.c idt.h apic.h acpi.h syscall.h irq.h
 gdt.c.o: gdt.c gdt.h
 apic.c.o: apic.c apic.h acpi.h panic.h printk.h paging.h defs.h
@@ -19,5 +20,7 @@ timer.c.o: timer.c irq.h vga.h common.h apic.h acpi.h timer.h sched.h ata.h \
 ext2.c.o: ext2.c ext2.h defs.h panic.h printk.h ata.h pci.h sched.h \
  common.h
 syscall.c.o: syscall.c syscall.h irq.h panic.h printk.h common.h errno.h \
- timer.h sched.h bug.h ata.h pci.h vga.h
+ timer.h sched.h ata.h pci.h vga.h
 init.c.o: init.c init.h defs.h ext2.h
+memory_map.c.o: memory_map.c memory_map.h multiboot.h vga.h common.h \
+ panic.h printk.h defs.h

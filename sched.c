@@ -5,7 +5,6 @@
 #include "paging.h"
 #include "panic.h"
 #include "gdt.h"
-#include "bug.h"
 #include "init.h"
 
 #define MAX_TASKS          256

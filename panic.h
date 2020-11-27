@@ -14,3 +14,5 @@ void __panic(const char* location, const char* msg, ...);
 
 #define BUG_ON(expr) if (expr) { panic("bug: '" #expr "'"); }
 #define BUG_ON_NULL(expr) BUG_ON(expr == NULL)
+
+#define PANIC_ON(cond, msg, ...) if (cond) { panic(msg, ##__VA_ARGS__); }

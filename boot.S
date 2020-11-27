@@ -29,7 +29,9 @@ _start_early:
     # Bootstrap stack.
 	mov $stack_top, %esp
 
+	push %ebx
     call setup_paging_early
+	pop %ebx
 
     mov $early_pgdir, %eax
     mov %eax, %cr3
@@ -48,7 +50,8 @@ _start_early:
     mov $(stack_top + KERNEL_HIGH), %esp
     mov $(stack_top + KERNEL_HIGH), %ebp
 
+	push %ebx
 	mov $kernel_main, %eax
-    jmp *%eax
+    call *%eax
 
 .size _start_early, . - _start_early
