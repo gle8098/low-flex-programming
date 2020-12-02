@@ -15,6 +15,7 @@
 #include "pci.h"
 #include "ata.h"
 #include "memory_map.h"
+#include "keyboard.h"
 
 void kernel_main(multiboot_info_t* mbd_lmem_ptr) {
     init_gdt();

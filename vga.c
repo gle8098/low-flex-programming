@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "paging.h"
+#include "keyboard.h"
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -7,6 +8,11 @@ static const size_t VGA_HEIGHT = 25;
 static size_t terminal_row;
 static size_t terminal_column;
 static uint16_t* terminal_buffer;
+
+void handle_keypress(keyboard_event_t* event, void* _) {
+    char str[] = {event->keycode, '\0'};
+    terminal_writestring(str);
+}
 
 void terminal_initialize(void) {
     terminal_row = 0;
@@ -19,6 +25,8 @@ void terminal_initialize(void) {
             terminal_buffer[index] = vga_entry(' ', color);
         }
     }
+
+    register_event_callback(EVENT_KEY_PRESS, (callback_t) handle_keypress, NULL);
 }
 
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {

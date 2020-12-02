@@ -1,7 +1,9 @@
 ata.c.o: ata.c ata.h pci.h sched.h io.h defs.h printk.h panic.h irq.h \
  apic.h acpi.h common.h timer.h
-keyboard.c.o: keyboard.c irq.h vga.h common.h apic.h acpi.h
-vga.c.o: vga.c vga.h common.h paging.h defs.h
+event_bus.c.o: event_bus.c event_bus.h panic.h printk.h
+keyboard.c.o: keyboard.c irq.h apic.h acpi.h ps2_kbd_defs.h io.h defs.h \
+ printk.h keyboard.h event_bus.h
+vga.c.o: vga.c vga.h common.h paging.h defs.h keyboard.h event_bus.h
 pci.c.o: pci.c pci.h io.h defs.h printk.h panic.h
 acpi.c.o: acpi.c acpi.h common.h paging.h defs.h panic.h printk.h
 panic.c.o: panic.c panic.h printk.h irq.h
@@ -9,7 +11,7 @@ sched.c.o: sched.c sched.h errno.h irq.h common.h paging.h defs.h panic.h \
  printk.h gdt.h init.h
 kernel.c.o: kernel.c multiboot.h idt.h gdt.h acpi.h apic.h irq.h vga.h \
  common.h panic.h printk.h paging.h defs.h sched.h pci.h ata.h \
- memory_map.h
+ memory_map.h keyboard.h event_bus.h
 idt.c.o: idt.c idt.h apic.h acpi.h syscall.h irq.h
 gdt.c.o: gdt.c gdt.h
 apic.c.o: apic.c apic.h acpi.h panic.h printk.h paging.h defs.h
