@@ -20,20 +20,22 @@ void kernel_main(multiboot_info_t* mbd_lmem_ptr) {
     init_gdt();
     init_idt();
 
+    terminal_initialize();
+    print_mmap(mbd_lmem_ptr);
+
     init_kalloc_early();
     init_kernel_paging();
-
-    terminal_initialize();
 
     struct acpi_sdt* rsdt = acpi_find_rsdt();
     if (!rsdt) {
         panic("RSDT not found!");
+    } else {
+        printk("RSDT found at %x\n", (uint32_t) rsdt);
+        acpi_validate_rsdt(rsdt);
     }
 
     apic_init(rsdt);
     // TODO: ata_init();
-
-    print_mmap(mbd_lmem_ptr);
 
     printk("Hell OS is loaded\n");
 

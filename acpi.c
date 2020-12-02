@@ -1,6 +1,7 @@
 #include "acpi.h"
 #include "common.h"
 #include "paging.h"
+#include "panic.h"
 
 static struct acpi_rsdp* find_rsdp_in_region(void* start, size_t len) {
     for (size_t i = 0; i < len - 8; i++) {
@@ -39,4 +40,24 @@ struct acpi_sdt* acpi_find_sdt(struct acpi_sdt* root, const char* signature) {
         }
     }
     return NULL;
+}
+
+int acpi_validate_sdt(struct acpi_sdt* entry) {
+    unsigned char sum = 0;
+
+    struct acpi_sdt_header* header = &entry->header;
+    for (uint32_t i = 0; i < header->length; i++) {
+        sum += ((char *) header)[i];
+    }
+
+    return sum == 0;
+}
+
+void acpi_validate_rsdt(struct acpi_sdt* root) {
+    uint32_t size = (root->header.length - sizeof(struct acpi_sdt_header)) / sizeof(struct acpi_sdt*);
+    for (uint32_t i = 0; i < size; ++i) {
+        if (!acpi_validate_sdt(root->entries[i])) {
+            panic("SDT table #%d corrupted", i);
+        }
+    }
 }

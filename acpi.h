@@ -36,3 +36,5 @@ struct acpi_rsdp {
 
 struct acpi_sdt* acpi_find_rsdt();
 struct acpi_sdt* acpi_find_sdt(struct acpi_sdt* root, const char* signature);
+
+void acpi_validate_rsdt(struct acpi_sdt* root);
