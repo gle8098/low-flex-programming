@@ -23,4 +23,4 @@ syscall.c.o: syscall.c syscall.h irq.h panic.h printk.h common.h errno.h \
  timer.h sched.h ata.h pci.h vga.h
 init.c.o: init.c init.h defs.h ext2.h
 memory_map.c.o: memory_map.c memory_map.h multiboot.h vga.h common.h \
- panic.h printk.h defs.h
+ panic.h printk.h defs.h paging.h

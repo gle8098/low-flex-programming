@@ -20,11 +20,11 @@ void kernel_main(multiboot_info_t* mbd_lmem_ptr) {
     init_gdt();
     init_idt();
 
-    terminal_initialize();
-    print_mmap(mbd_lmem_ptr);
-
     init_kalloc_early();
     init_kernel_paging();
+
+    terminal_initialize();
+    print_mmap(mbd_lmem_ptr);
 
     struct acpi_sdt* rsdt = acpi_find_rsdt();
     if (!rsdt) {
