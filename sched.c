@@ -90,7 +90,7 @@ void do_idle() {
     asm volatile ("hlt");
 }
 
-void scheduler_start() {
+_Noreturn void scheduler_start() {
     // Interrupts are still disabled.
     struct task* init = NULL;
     if (task_allocate(&init) != 0) {

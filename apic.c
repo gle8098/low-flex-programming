@@ -1,6 +1,7 @@
 #include "apic.h"
 #include "panic.h"
 #include "paging.h"
+#include "io.h"
 
 #define TYPE_LAPIC          0
 #define TYPE_IOAPIC         1
@@ -71,10 +72,6 @@ static uint32_t lapic_read(size_t idx) {
 #define APIC_DELIVS      0x1000
 #define TMR_PERIODIC     0x20000
 #define TMR_BASEDIV      (1<<20)
-
-static inline void outb(uint16_t port, uint8_t data) {
-  asm volatile("out %0,%1" : : "a" (data), "d" (port));
-}
 
 #define IOAPIC_REG_TABLE  0x10
 
@@ -150,4 +147,84 @@ void apic_init(struct acpi_sdt* rsdt) {
 
 void apic_eoi() {
     lapic_write(APIC_EOI, 0);
+}
+
+
+static inline void pit_prepare_sleep(int mcsec) {
+    /*  ;initialize PIT Ch 2 in one-shot mode
+		;waiting 1 sec could slow down boot time considerably,
+		;so we'll wait 1/100 sec, and multiply the counted ticks
+		mov			dx, 61h
+		in			al, dx
+		and			al, 0fdh
+		or			al, 1
+		out			dx, al
+		mov			al, 10110010b
+		out			43h, al
+		;1193180/100 Hz = 11931 = 2e9bh
+		mov			al, 9bh		;LSB
+		out			42h, al
+		in			al, 60h		;short delay
+		mov			al, 2eh		;MSB
+		out			42h, al
+     */
+    int st = inb(0x61);
+    st = (st & 0xfd) | 1;
+    outb(0x61, st);
+    outb(0x43, 0b10110010);
+    int tick_cnt = 1193182 / (mcsec / 100);
+    outb(0x42, tick_cnt & 0xff);
+    inb(0x60);  // short delay
+    outb(0x42, tick_cnt >> 8);
+}
+
+static inline uint32_t pit_perform_sleep() {
+    /*  ;reset PIT one-shot counter (start counting)
+		in			al, dx
+		and			al, 0feh
+		out			dx, al		;gate low
+		or			al, 1
+		out			dx, al		;gate high
+		;now wait until PIT counter reaches zero
+@@:		in			al, dx
+		and			al, 20h
+		jz			@b
+     */
+    int st = inb(0x61);
+    st = (st & 0xfe);
+    outb(0x61, st);
+    st |= 1;
+    outb(0x61, st);
+    uint32_t cnt = 0;
+    while ((inb(0x61) & 0x20) != 0) {
+        ++cnt;
+    }
+    return cnt;
+}
+
+void calibrate_apic_timer() {
+    // Tell APIC timer to use divider 16
+    lapic_write(APIC_TMRDIV, 0x3);
+
+    // Prepare the PIT to sleep for 10ms (10000µs)
+    pit_prepare_sleep(10000);
+
+    // Set APIC init counter to -1
+    lapic_write(APIC_TMRINITCNT, 0xFFFFFFFF);
+
+    // Perform PIT-supported sleep
+    pit_perform_sleep();
+
+    // Stop the APIC timer
+    lapic_write(APIC_LVT_TMR, APIC_DISABLE);
+
+    // Now we know how often the APIC timer has ticked in 10ms
+    uint32_t ticksIn10ms = 0xFFFFFFFF - lapic_read(APIC_TMRCURRCNT);
+
+    // Start timer as periodic on IRQ 0, divider 16, with the number of ticks we counted
+    lapic_write(APIC_LVT_TMR, 32 | TMR_PERIODIC);
+    lapic_write(APIC_TMRDIV, 0x3);
+
+    // Fire IRQ0 at every millisecond
+    lapic_write(APIC_TMRINITCNT, ticksIn10ms / 10);
 }

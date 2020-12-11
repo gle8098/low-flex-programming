@@ -36,6 +36,7 @@ void kernel_main(multiboot_info_t* mbd_lmem_ptr) {
     }
 
     apic_init(rsdt);
+    calibrate_apic_timer();
     // TODO: ata_init();
 
     printk("Hell OS is loaded\n");

@@ -14,11 +14,11 @@ kernel.c.o: kernel.c multiboot.h idt.h gdt.h acpi.h apic.h irq.h vga.h \
  memory_map.h keyboard.h event_bus.h
 idt.c.o: idt.c idt.h apic.h acpi.h syscall.h irq.h
 gdt.c.o: gdt.c gdt.h
-apic.c.o: apic.c apic.h acpi.h panic.h printk.h paging.h defs.h
+apic.c.o: apic.c apic.h acpi.h panic.h printk.h paging.h defs.h io.h
 paging.c.o: paging.c paging.h defs.h common.h panic.h printk.h irq.h
 printk.c.o: printk.c vga.h common.h
 timer.c.o: timer.c irq.h vga.h common.h apic.h acpi.h timer.h sched.h ata.h \
- pci.h
+ pci.h printk.h
 ext2.c.o: ext2.c ext2.h defs.h panic.h printk.h ata.h pci.h sched.h \
  common.h
 syscall.c.o: syscall.c syscall.h irq.h panic.h printk.h common.h errno.h \

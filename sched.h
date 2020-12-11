@@ -31,6 +31,7 @@ struct task {
 extern struct task* current;
 
 struct task* task_create();
-void scheduler_start();
+
+_Noreturn void scheduler_start();
 void scheduler_tick(struct regs* regs);
 void reschedule();
